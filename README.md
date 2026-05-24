@@ -1,8 +1,8 @@
 # 🎩 Обратная магия Затанны
 
-![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?logo=css3&logoColor=white)
-![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?logo=javascript&logoColor=%23F7DF1E)
+[![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?logo=html5&logoColor=white)](https://nik3elge.github.io/DC-Reverse-magic/)
+[![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?logo=css3&logoColor=white)](https://nik3elge.github.io/DC-Reverse-magic/)
+[![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?logo=javascript&logoColor=%23F7DF1E)](https://nik3elge.github.io/DC-Reverse-magic/)
 [![VK](https://img.shields.io/badge/VK-BATCOM-yellow?logo=vk&logoColor=white)](https://vk.com/nananabatcom)
 [![Boosty](https://img.shields.io/badge/Boosty-BATCOM-orange?logo=boosty&logoColor=white)](https://boosty.to/nananabatcom/donate)
 
