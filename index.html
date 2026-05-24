@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Обратная магия Затанны</title>
+    <style>
+        /* Базовые настройки страницы */
+        body {
+            margin: 0;
+            /* Отступы сверху смещают контент чуть выше центра (12vh), 
+               а боковые отступы защищают контент на мобильных экранах */
+            padding: 14vh 20px 40px 20px; 
+            min-height: 100vh;
+            background: radial-gradient(circle at center top, #0f172a 0%, #020617 100%);
+            color: #f1f5f9;
+            /* Единый современный и четкий моноширинный шрифт для всех элементов */
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Monaco, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            box-sizing: border-box;
+            overflow-x: hidden;
+        }
+
+        /* Адаптивный контейнер */
+        .container {
+            width: 100%;
+            max-width: 650px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            position: relative;
+        }
+
+        header {
+            text-align: center;
+        }
+
+        /* Заголовок адаптируется под ширину экрана мобильного */
+        h1 {
+            font-size: clamp(1.5rem, 6vw, 2.2rem);
+            margin: 0 0 15px 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #7dd3fc;
+            text-shadow: 0 0 15px rgba(56, 189, 248, 0.7);
+            font-weight: 700;
+        }
+
+        .description {
+            font-size: clamp(0.9rem, 4vw, 1.1rem);
+            line-height: 1.5;
+            color: #cbd5e1; /* Сделал цвет светлее для лучшей читаемости */
+            margin: 0;
+            font-weight: 400;
+        }
+
+        /* Общие стили для инпута и вывода текста */
+        textarea, .output {
+            font-family: inherit;
+            width: 100%;
+            background-color: rgba(15, 23, 42, 0.7);
+            border: 2px solid rgba(56, 189, 248, 0.4); /* Чуть более толстая рамка */
+            border-radius: 12px;
+            padding: 18px;
+            /* Размер шрифта 18px (1.15rem) предотвращает авто-зум на iPhone */
+            font-size: 1.15rem; 
+            font-weight: 500; /* Чуть жирнее для четкости */
+            color: #ffffff; /* Максимальный контраст */
+            box-sizing: border-box;
+            line-height: 1.5;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px); /* Для Safari на iOS */
+            transition: all 0.3s ease;
+        }
+
+        textarea {
+            resize: none;
+            overflow: hidden;
+            outline: none;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.05);
+        }
+
+        textarea:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.3);
+            background-color: rgba(15, 23, 42, 0.9);
+        }
+
+        .output {
+            box-shadow: 0 0 15px rgba(168, 85, 247, 0.1);
+            border-color: rgba(168, 85, 247, 0.4);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            cursor: pointer;
+            position: relative;
+            /* Специальный стиль, чтобы на мобильных было видно, что элемент кликабелен */
+            -webkit-tap-highlight-color: transparent; 
+        }
+
+        .output:hover, .output:active {
+            border-color: #a855f7;
+            box-shadow: 0 0 25px rgba(168, 85, 247, 0.3);
+            background-color: rgba(24, 24, 37, 0.9);
+        }
+
+        .output:empty::before {
+            content: 'Текст заклинания появится здесь...';
+            color: #64748b;
+        }
+
+        /* Уведомление о копировании адаптировано для мобилок */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translate(-50%, 100px); /* Центрирование всплывашки */
+            background: linear-gradient(135deg, #38bdf8, #a855f7);
+            color: #020617;
+            font-weight: bold;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+            z-index: 10;
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Обратная магия Затанны</h1>
+        <p class="description">
+            Этот инструмент создан для мгновенного наложения чар и перевода обычных фраз в истинные обратные заклинания, которые использует Затанна Затара из Вселенной DC Comics. Введите текст, и магия сделает всё за вас.
+        </p>
+    </header>
+
+    <textarea id="inputText" rows="1" placeholder="Введите слова заклинания..."></textarea>
+    <div id="outputText" class="output" title="Нажмите, чтобы скопировать заклинание"></div>
+</div>
+
+<div id="toast" class="toast">Заклинание скопировано!</div>
+
+<script>
+    const input = document.getElementById('inputText');
+    const output = document.getElementById('outputText');
+    const toast = document.getElementById('toast');
+
+    function reverseWord(word) {
+        const chars = word.split('');
+        const isUpper = chars.map(c => c === c.toUpperCase() && c !== c.toLowerCase());
+        const reversedChars = chars.slice().reverse();
+
+        return reversedChars.map((c, i) => {
+            return isUpper[i] ? c.toUpperCase() : c.toLowerCase();
+        }).join('');
+    }
+
+    function processText(text) {
+        return text.replace(/[a-zA-Zа-яА-ЯёЁ]+/g, reverseWord);
+    }
+
+    input.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = this.scrollHeight + 'px';
+        output.textContent = processText(this.value);
+    });
+
+    output.addEventListener('click', function() {
+        const textToCopy = output.textContent;
+        if (!textToCopy) return;
+
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }).catch(err => {
+            console.error('Не удалось скопировать текст: ', err);
+        });
+    });
+</script>
+
+</body>
+</html>
