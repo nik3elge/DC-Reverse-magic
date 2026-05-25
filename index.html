@@ -52,7 +52,7 @@
         .description {
             font-size: clamp(0.9rem, 4vw, 1.1rem);
             line-height: 1.5;
-            color: #cbd5e1; /* Сделал цвет светлее для лучшей читаемости */
+            color: #cbd5e1;
             margin: 0;
             font-weight: 400;
         }
@@ -62,17 +62,16 @@
             font-family: inherit;
             width: 100%;
             background-color: rgba(15, 23, 42, 0.7);
-            border: 2px solid rgba(56, 189, 248, 0.4); /* Чуть более толстая рамка */
+            border: 2px solid rgba(56, 189, 248, 0.4);
             border-radius: 12px;
             padding: 18px;
-            /* Размер шрифта 18px (1.15rem) предотвращает авто-зум на iPhone */
             font-size: 1.15rem; 
-            font-weight: 500; /* Чуть жирнее для четкости */
-            color: #ffffff; /* Максимальный контраст */
+            font-weight: 500;
+            color: #ffffff;
             box-sizing: border-box;
             line-height: 1.5;
             backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px); /* Для Safari на iOS */
+            -webkit-backdrop-filter: blur(10px);
             transition: all 0.3s ease;
         }
 
@@ -96,7 +95,6 @@
             word-wrap: break-word;
             cursor: pointer;
             position: relative;
-            /* Специальный стиль, чтобы на мобильных было видно, что элемент кликабелен */
             -webkit-tap-highlight-color: transparent; 
         }
 
@@ -111,12 +109,12 @@
             color: #64748b;
         }
 
-        /* Уведомление о копировании адаптировано для мобилок */
+        /* Уведомление о копировании */
         .toast {
             position: fixed;
             bottom: 30px;
             left: 50%;
-            transform: translate(-50%, 100px); /* Центрирование всплывашки */
+            transform: translate(-50%, 100px);
             background: linear-gradient(135deg, #38bdf8, #a855f7);
             color: #020617;
             font-weight: bold;
@@ -135,6 +133,26 @@
             opacity: 1;
             transform: translate(-50%, 0);
         }
+
+        /* Стили для подвала */
+        footer {
+            margin-top: auto; /* Автоматически отталкивает подвал в самый низ экрана */
+            padding-top: 40px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        footer a {
+            color: #38bdf8;
+            text-decoration: none;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+        }
+
+        footer a:hover {
+            color: #7dd3fc;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+        }
     </style>
 </head>
 <body>
@@ -143,7 +161,7 @@
     <header>
         <h1>Обратная магия Затанны</h1>
         <p class="description">
-            Этот инструмент создан для мгновенного наложения чар и перевода обычных фраз в истинные обратные заклинания, которые использует Затанна Затара из Вселенной DC Comics. Введите текст, и магия сделает всё за вас.
+            Этот инструмент создан для мгновенного наложения чар и перевода обычных фраз в истинные обратные заклинания, которые использует Затанна Затара из Вселенной DC Comics. Введите текст, и магия сделает всё за вас.
         </p>
     </header>
 
@@ -151,12 +169,20 @@
     <div id="outputText" class="output" title="Нажмите, чтобы скопировать заклинание"></div>
 </div>
 
+<footer>
+    © <span id="currentYear"></span> | <a href="https://github.com/nik3elge/DC-Reverse-magic" target="_blank" rel="noopener noreferrer">GitHub проекта</a>
+</footer>
+
 <div id="toast" class="toast">Заклинание скопировано!</div>
 
 <script>
     const input = document.getElementById('inputText');
     const output = document.getElementById('outputText');
     const toast = document.getElementById('toast');
+    const yearSpan = document.getElementById('currentYear');
+
+    // Устанавливаем текущий год в подвале автоматически
+    yearSpan.textContent = new Date().getFullYear();
 
     function reverseWord(word) {
         const chars = word.split('');
